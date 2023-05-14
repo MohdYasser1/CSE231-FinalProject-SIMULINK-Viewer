@@ -14,11 +14,16 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) {
-        var javaVersion = SystemInfo.javaVersion();
-        var javafxVersion = SystemInfo.javafxVersion();
-
-        var label = new Label("Hello, JavaFX " + javafxVersion + ", running on Java " + javaVersion + ".");
-        var scene = new Scene(new StackPane(label), 640, 480);
+        //Create a Stack pane because I think it is the best option
+        //-->But we have to make sure that the blocks are not overlapping.
+        StackPane pane = new StackPane();
+        Scene scene = new Scene(pane, 640, 480);//What are the window size we want ? --> 640, 480
+        /*
+        According to the mdl file there is position wish indicates the position on the screen
+        with a [left top right bottom] format starting with [0 0 0 0] at the left upper corner
+        which may be benificial as the java format also start 0,0 in the upper left 
+        I think that this default window is suitable and we will apply the coordinates accordinaly
+        */
         stage.setScene(scene);
         stage.show();
     }
