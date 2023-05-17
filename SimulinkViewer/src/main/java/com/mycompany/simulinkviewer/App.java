@@ -93,12 +93,16 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
-        createBlocks(getFileContent(args[0]));
+        String fileContent = getFileContent(args[0]);
+        if(fileContent == null){
+            throw new EmptyMDLFileException("The .mdl file is EMPTY");
+        }
+        createBlocks(fileContent);
         launch();
     }
 
     public static double translatePosition(double position){
-        
+        return 0;
     }
     
     
