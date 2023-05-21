@@ -49,6 +49,20 @@ class Block{
     public Block(String content){
         Num++;
         SID = Integer.parseInt(content.substring(content.indexOf("SID=")+5,content.indexOf("\"",content.indexOf("SID=")+5)));
+        name = content.substring(content.indexOf("Name=")+6,content.indexOf("\"",content.indexOf("Name=")+6));
+        
+        int startIndex = content.indexOf("\"Position\">[")+12;
+        int endIndex=content.indexOf(",",startIndex);
+        left = Integer.parseInt(content.substring(startIndex,endIndex));
+        startIndex = endIndex + 2;
+        endIndex=content.indexOf(",",startIndex);
+        top = Integer.parseInt(content.substring(startIndex,endIndex));
+        startIndex = endIndex + 2;
+        endIndex=content.indexOf(",",startIndex);
+        right = Integer.parseInt(content.substring(startIndex,endIndex));
+        startIndex = endIndex + 2;
+        endIndex=content.indexOf("]",startIndex);
+        bottom = Integer.parseInt(content.substring(startIndex,endIndex));        
     }
     
     public static int getNum(){
@@ -63,7 +77,7 @@ public class App extends Application {
         //-->But we have to make sure that the blocks are not overlapping.
         Pane pane = new Pane();
 
-
+        
         // Block Add
         Rectangle blockAdd = new Rectangle(1040, 209, 30, 32);
         pane.getChildren().add(blockAdd);
@@ -103,7 +117,7 @@ public class App extends Application {
         if(fileContent == null){
             throw new EmptyMDLFileException("The .mdl file is EMPTY");
         }
-        createBlocks(fileContent);
+        ArrayList<Block> blocks = createBlocks(fileContent);
         launch();
     }
 
@@ -116,10 +130,9 @@ public class App extends Application {
         //Reuse Assignment 6
         try {
             //Checking if we have the right extension
-//            if(false){
-//            if(!filename.endsWith(".mdl")){
-//                throw new NotValidMDLFileException("This file doesn't has the .mdl extension");
-//            }}
+            if(!filename.endsWith(".mdl")){
+                throw new NotValidMDLFileException("This file doesn't has the .mdl extension");
+            }
             //Input the file
             File inputfile = new File(filename);
             //Buffered read to read the entire file
@@ -127,22 +140,21 @@ public class App extends Application {
             StringBuilder data = new StringBuilder();
             String line;
             //Checking if the file is not empty
-//            if(inputfile.length() == 0){
-//                throw new EmptyMDLFileException("The .mdl file is EMPTY");
-//            }
+            if(inputfile.length() == 0){
+                throw new EmptyMDLFileException("The .mdl file is EMPTY");
+            }
             while((line = readfile.readLine()) != null){
                 data.append(line);
                 data.append("\n");
             }
             String fileString = data.toString();
             return fileString;
-//        } catch (NotValidMDLFileException e) {
-//                System.out.println("Not valid .mdl file: " +e.getMessage()); 
-// 
+        } catch (NotValidMDLFileException e) {
+                System.out.println("Not valid .mdl file: " +e.getMessage());  
         } catch (FileNotFoundException e){
             System.out.println(e.getMessage());
-//        } catch (EmptyMDLFileException e){
-//            System.out.println("Empty arxml file: " +e.getMessage()); 
+        } catch (EmptyMDLFileException e){
+            System.out.println("Empty arxml file: " +e.getMessage()); 
         } catch (IOException e){
             System.out.println(e.getMessage());
         }
@@ -152,7 +164,7 @@ public class App extends Application {
     Do I want to create a retrun typr to return the array list
     How to transfer the Blocks to the Application to draw the blocks
 */
-    public static void createBlocks(String fileContent){
+    public static ArrayList createBlocks(String fileContent){
         ArrayList<Block> blocks = new ArrayList<Block>();
         int index = fileContent.indexOf("<System>");
         while(fileContent.indexOf("<Block BlockType",index) != -1){
@@ -160,7 +172,7 @@ public class App extends Application {
             index = fileContent.indexOf("<Block BlockType", index) + 1;
         }
         //We have an ArrayList of blocks
-
+        return blocks;
     }
 }
 class NotValidMDLFileException extends Exception{
