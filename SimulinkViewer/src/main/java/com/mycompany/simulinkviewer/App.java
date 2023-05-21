@@ -19,6 +19,7 @@ import java.util.Scanner;
 
 
 
+
 /*
 Ahmed/Omar TODO:
 class Block:
@@ -43,9 +44,11 @@ class Block{
     private int top;
     private int right;
     private int bottom;
+    
     //Given a blocks content this constructor should divide it into its important parts
     public Block(String content){
-        
+        Num++;
+        SID = Integer.parseInt(content.substring(content.indexOf("SID=")+5,content.indexOf("\"",content.indexOf("SID=")+5)));
     }
     
     public static int getNum(){
@@ -93,7 +96,10 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
-        String fileContent = getFileContent(args[0]);
+        Scanner input = new Scanner(System.in);
+        String fileContent = getFileContent("src/main/java/com/mycompany/simulinkviewer/Example.mdl");
+//        String fileContent = getFileContent(input.nextLine());
+        //String fileContent = getFileContent(args[0]);
         if(fileContent == null){
             throw new EmptyMDLFileException("The .mdl file is EMPTY");
         }
@@ -110,9 +116,10 @@ public class App extends Application {
         //Reuse Assignment 6
         try {
             //Checking if we have the right extension
-            if(!filename.endsWith(".mdl")){
-                throw new NotValidMDLFileException("This file doesn't has the .mdl extension");
-            }
+//            if(false){
+//            if(!filename.endsWith(".mdl")){
+//                throw new NotValidMDLFileException("This file doesn't has the .mdl extension");
+//            }}
             //Input the file
             File inputfile = new File(filename);
             //Buffered read to read the entire file
@@ -120,24 +127,24 @@ public class App extends Application {
             StringBuilder data = new StringBuilder();
             String line;
             //Checking if the file is not empty
-            if(inputfile.length() == 0){
-                throw new EmptyMDLFileException("The .mdl file is EMPTY");
-            }
+//            if(inputfile.length() == 0){
+//                throw new EmptyMDLFileException("The .mdl file is EMPTY");
+//            }
             while((line = readfile.readLine()) != null){
                 data.append(line);
                 data.append("\n");
             }
             String fileString = data.toString();
             return fileString;
-        } catch (NotValidMDLFileException e) {
-                System.out.println("Not valid .arxml file: " +e.getMessage()); 
- 
+//        } catch (NotValidMDLFileException e) {
+//                System.out.println("Not valid .mdl file: " +e.getMessage()); 
+// 
         } catch (FileNotFoundException e){
-            System.out.println(e.getMessage()); 
-        } catch (EmptyMDLFileException e){
-            System.out.println("Empty arxml file: " +e.getMessage()); 
+            System.out.println(e.getMessage());
+//        } catch (EmptyMDLFileException e){
+//            System.out.println("Empty arxml file: " +e.getMessage()); 
         } catch (IOException e){
-            System.out.println(e.getMessage()); 
+            System.out.println(e.getMessage());
         }
         return null;
     }
@@ -147,12 +154,13 @@ public class App extends Application {
 */
     public static void createBlocks(String fileContent){
         ArrayList<Block> blocks = new ArrayList<Block>();
-        int index = 0;
+        int index = fileContent.indexOf("<System>");
         while(fileContent.indexOf("<Block BlockType",index) != -1){
             blocks.add(new Block(fileContent.substring(index = fileContent.indexOf("<Block BlockType",index), fileContent.indexOf("</Block>", index) + 8)));
             index = fileContent.indexOf("<Block BlockType", index) + 1;
         }
-    
+        //We have an ArrayList of blocks
+
     }
 }
 class NotValidMDLFileException extends Exception{
