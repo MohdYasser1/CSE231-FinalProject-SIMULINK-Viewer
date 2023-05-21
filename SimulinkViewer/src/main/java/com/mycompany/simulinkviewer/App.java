@@ -5,6 +5,10 @@ import javafx.stage.Stage;
 import javafx.scene.*;
 import javafx.scene.layout.*; 
 import javafx.scene.shape.*;
+import javafx.scene.paint.*;
+import javafx.scene.text.*;
+import javafx.scene.control.*;
+import javafx.geometry.*;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -23,16 +27,6 @@ import java.util.Scanner;
 /*
 Ahmed/Omar TODO:
 class Block:
-    static int Num:number of blocks.
-    static int getNum(): a static method which returns the number of blocks.
-    int getSID()
-    //Getting the position of the block
-    //If you have a better idea go ahead
-    int getLeft()
-    int getTop()
-    int getRight()
-    int getBottom()
-
     int getMinLeft(): Gets the minimum left position of a block to place it first and to be a refrence
     
 */
@@ -56,33 +50,36 @@ public class App extends Application {
 
         Pane pane = new Pane();
 
+        //An ArrayList of left to find the border of the blocks.
+        ArrayList<Integer> leftBorder = new ArrayList<Integer>();
+        
         for (int i = 0; i < blocks.size(); i++) {
             int left = blocks.get(i).getLeft();
-            int top =  blocks.get(i).getTop();
-            int width = blocks.get(i).getRight() - left;
-            int height = blocks.get(i).getBottom() - top;
-            pane.getChildren().add(new Rectangle(left, top, width, height));
+            leftBorder.add(left);    
         }
-        // // Block Add
-        // Rectangle blockAdd = new Rectangle(1040, 209, 30, 32);
-        // pane.getChildren().add(blockAdd);
+        int minLeft = Collections.min(leftBorder);
 
-        // // Block Constant
-        // Rectangle blockConstant = new Rectangle(780, 200, 30, 30);
-        // pane.getChildren().add(blockConstant);
+        int leftShift = minLeft - 100;
 
-        // // Block Saturation
-        // Rectangle blockSaturation = new Rectangle(935, 200, 30, 30);
-        // pane.getChildren().add(blockSaturation);
+        for (int i = 0; i < blocks.size(); i++) {
+            int left = blocks.get(i).getLeft() - leftShift;
+            int top =  blocks.get(i).getTop();
+            int width = blocks.get(i).getRight() - left - leftShift;
+            int height = blocks.get(i).getBottom() - top;
+            Rectangle rect = new Rectangle(left, top, width, height);            
+            rect.setFill(Color.WHITE);
+            rect.setStrokeWidth(3.0);
+            rect.setStroke(Color.rgb(0, 204, 204));
+            pane.getChildren().add(rect);
+            Text text = new Text(blocks.get(i).getName());
+            
+            text.setLayoutX(rect.getX() + (rect.getWidth()-text.getLayoutBounds().getWidth())/2);
+            text.setLayoutY(top + width + 20);
+ 
+            pane.getChildren().add(text);
+        }
 
-        // // Block Scope
-        // Rectangle blockScope = new Rectangle(1130, 209, 30, 32);
-        // pane.getChildren().add(blockScope);
 
-        // // Block Unit Delay
-        // Rectangle blockUnitDelay = new Rectangle(1040, 283, 35, 34);
-        // pane.getChildren().add(blockUnitDelay);
-        
         Scene scene = new Scene(pane, 640, 480);//What are the window size we want ? --> 640, 480
         /*
         According to the mdl file there is position wish indicates the position on the screen
@@ -100,11 +97,7 @@ public class App extends Application {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//ToDo: Implement
-public static double translatePosition(double position){
-    return 0;
-}
-    
+ 
     
 public static String getFileContent(String filename){
     //Reuse Assignment 6
