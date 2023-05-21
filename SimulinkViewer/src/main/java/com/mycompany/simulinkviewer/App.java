@@ -36,67 +36,52 @@ class Block:
     int getMinLeft(): Gets the minimum left position of a block to place it first and to be a refrence
     
 */
-class Block{
-    private static int Num;
-    private int SID;
-    private String name;
-    private int left;
-    private int top;
-    private int right;
-    private int bottom;
-    
-    //Given a blocks content this constructor should divide it into its important parts
-    public Block(String content){
-        Num++;
-        SID = Integer.parseInt(content.substring(content.indexOf("SID=")+5,content.indexOf("\"",content.indexOf("SID=")+5)));
-        name = content.substring(content.indexOf("Name=")+6,content.indexOf("\"",content.indexOf("Name=")+6));
-        
-        int startIndex = content.indexOf("\"Position\">[")+12;
-        int endIndex=content.indexOf(",",startIndex);
-        left = Integer.parseInt(content.substring(startIndex,endIndex));
-        startIndex = endIndex + 2;
-        endIndex=content.indexOf(",",startIndex);
-        top = Integer.parseInt(content.substring(startIndex,endIndex));
-        startIndex = endIndex + 2;
-        endIndex=content.indexOf(",",startIndex);
-        right = Integer.parseInt(content.substring(startIndex,endIndex));
-        startIndex = endIndex + 2;
-        endIndex=content.indexOf("]",startIndex);
-        bottom = Integer.parseInt(content.substring(startIndex,endIndex));        
-    }
-    
-    public static int getNum(){
-        return Num;
-    }
-}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////   Application  ///////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 public class App extends Application {
 
     @Override
     public void start(Stage stage) {
-        //Create a Stack pane because I think it is the best option
-        //-->But we have to make sure that the blocks are not overlapping.
+        Scanner input = new Scanner(System.in);
+        String fileContent = getFileContent("src/main/java/com/mycompany/simulinkviewer/Example.mdl");
+        // String fileContent = getFileContent(input.nextLine());
+        //String fileContent = getFileContent(args[0]);
+
+        //We have 2 ArrayLists, One for blocks and One for lines.
+        ArrayList<Block> blocks = createBlocks(fileContent);
+        ArrayList<Line> lines = createLines(fileContent);
+
+
         Pane pane = new Pane();
 
-        
-        // Block Add
-        Rectangle blockAdd = new Rectangle(1040, 209, 30, 32);
-        pane.getChildren().add(blockAdd);
+        for (int i = 0; i < blocks.size(); i++) {
+            int left = blocks.get(i).getLeft();
+            int top =  blocks.get(i).getTop();
+            int width = blocks.get(i).getRight() - left;
+            int height = blocks.get(i).getBottom() - top;
+            pane.getChildren().add(new Rectangle(left, top, width, height));
+        }
+        // // Block Add
+        // Rectangle blockAdd = new Rectangle(1040, 209, 30, 32);
+        // pane.getChildren().add(blockAdd);
 
-        // Block Constant
-        Rectangle blockConstant = new Rectangle(780, 200, 30, 30);
-        pane.getChildren().add(blockConstant);
+        // // Block Constant
+        // Rectangle blockConstant = new Rectangle(780, 200, 30, 30);
+        // pane.getChildren().add(blockConstant);
 
-        // Block Saturation
-        Rectangle blockSaturation = new Rectangle(935, 200, 30, 30);
-        pane.getChildren().add(blockSaturation);
+        // // Block Saturation
+        // Rectangle blockSaturation = new Rectangle(935, 200, 30, 30);
+        // pane.getChildren().add(blockSaturation);
 
-        // Block Scope
-        Rectangle blockScope = new Rectangle(1130, 209, 30, 32);
-        pane.getChildren().add(blockScope);
+        // // Block Scope
+        // Rectangle blockScope = new Rectangle(1130, 209, 30, 32);
+        // pane.getChildren().add(blockScope);
 
-        // Block Unit Delay
-        Rectangle blockUnitDelay = new Rectangle(1040, 283, 35, 34);
-        pane.getChildren().add(blockUnitDelay);
+        // // Block Unit Delay
+        // Rectangle blockUnitDelay = new Rectangle(1040, 283, 35, 34);
+        // pane.getChildren().add(blockUnitDelay);
         
         Scene scene = new Scene(pane, 640, 480);//What are the window size we want ? --> 640, 480
         /*
@@ -110,56 +95,51 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
-        Scanner input = new Scanner(System.in);
-        String fileContent = getFileContent("src/main/java/com/mycompany/simulinkviewer/Example.mdl");
-//        String fileContent = getFileContent(input.nextLine());
-        //String fileContent = getFileContent(args[0]);
-        if(fileContent == null){
-            throw new EmptyMDLFileException("The .mdl file is EMPTY");
-        }
-        ArrayList<Block> blocks = createBlocks(fileContent);
         launch();
     }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public static double translatePosition(double position){
-        return 0;
-    }
+//ToDo: Implement
+public static double translatePosition(double position){
+    return 0;
+}
     
     
-    public static String getFileContent(String filename){
-        //Reuse Assignment 6
-        try {
-            //Checking if we have the right extension
-            if(!filename.endsWith(".mdl")){
-                throw new NotValidMDLFileException("This file doesn't has the .mdl extension");
-            }
-            //Input the file
-            File inputfile = new File(filename);
-            //Buffered read to read the entire file
-            BufferedReader readfile = new BufferedReader(new FileReader(inputfile));
-            StringBuilder data = new StringBuilder();
-            String line;
-            //Checking if the file is not empty
-            if(inputfile.length() == 0){
-                throw new EmptyMDLFileException("The .mdl file is EMPTY");
-            }
-            while((line = readfile.readLine()) != null){
-                data.append(line);
-                data.append("\n");
-            }
-            String fileString = data.toString();
-            return fileString;
-        } catch (NotValidMDLFileException e) {
-                System.out.println("Not valid .mdl file: " +e.getMessage());  
-        } catch (FileNotFoundException e){
-            System.out.println(e.getMessage());
-        } catch (EmptyMDLFileException e){
-            System.out.println("Empty arxml file: " +e.getMessage()); 
-        } catch (IOException e){
-            System.out.println(e.getMessage());
+public static String getFileContent(String filename){
+    //Reuse Assignment 6
+    try {
+        //Checking if we have the right extension
+        if(!filename.endsWith(".mdl")){
+            throw new NotValidMDLFileException("This file doesn't has the .mdl extension");
         }
-        return null;
+        //Input the file
+        File inputfile = new File(filename);
+        //Buffered read to read the entire file
+        BufferedReader readfile = new BufferedReader(new FileReader(inputfile));
+        StringBuilder data = new StringBuilder();
+        String line;
+        //Checking if the file is not empty
+        if(inputfile.length() == 0){
+            throw new EmptyMDLFileException("The .mdl file is EMPTY");
+        }
+        while((line = readfile.readLine()) != null){
+            data.append(line);
+            data.append("\n");
+        }
+        String fileString = data.toString();
+        return fileString;
+    } catch (NotValidMDLFileException e) {
+            System.out.println("Not valid .mdl file: " +e.getMessage());  
+    } catch (FileNotFoundException e){
+        System.out.println(e.getMessage());
+    } catch (EmptyMDLFileException e){
+        System.out.println("Empty arxml file: " +e.getMessage()); 
+    } catch (IOException e){
+        System.out.println(e.getMessage());
     }
+    return null;
+}
 /*
     Do I want to create a retrun typr to return the array list
     How to transfer the Blocks to the Application to draw the blocks
@@ -174,6 +154,17 @@ public class App extends Application {
         //We have an ArrayList of blocks
         return blocks;
     }
+    public static ArrayList createLines(String fileContent){
+        ArrayList<Line> lines = new ArrayList<Line>();
+        int index = fileContent.indexOf("<System>");
+        while(fileContent.indexOf("<Line>",index) != -1){
+            lines.add(new Line(fileContent.substring(index = fileContent.indexOf("<Line>",index), fileContent.indexOf("</Line>", index) + 8)));
+            index = fileContent.indexOf("<Line>", index) + 1;
+        }
+        //We have an ArrayList of lines
+        return lines;
+    }
+
 }
 class NotValidMDLFileException extends Exception{
     public NotValidMDLFileException(String message){
