@@ -78,6 +78,128 @@ public class App extends Application {
  
             pane.getChildren().add(text);
         }
+        for (int i = 0; i < lines.size(); i++) {
+            if (!lines.get(i).hasBranch()) {
+                Path arrow = new Path();
+                
+                int start = 0;
+                int end = 0;
+                
+                //Get the index of the source
+                for (int j = 0; j < blocks.size(); j++) {
+                    if (lines.get(i).getSrc() == blocks.get(j).getSID()) {
+                        start = j;
+                        break;
+                    }
+                }
+                
+
+                //Get the index of the distination
+                for (int j = 0; j < blocks.size(); j++) {
+                    if (lines.get(i).getDst() == blocks.get(j).getSID()) {
+                        end = j;
+                        break;
+                    }
+                }
+                // Set the starting point of the arrow
+                double startX = blocks.get(start).getRight() - leftShift;
+                double startY = blocks.get(start).getTop() + ((blocks.get(start).getBottom() - blocks.get(start).getTop())/2);
+
+                // Draw the straight arrow line
+                double endX = blocks.get(end).getLeft() - leftShift -3;
+                double endY = blocks.get(end).getTop() + ((blocks.get(end).getBottom() - blocks.get(end).getTop())/2);
+                
+                javafx.scene.shape.Line line = new javafx.scene.shape.Line(startX, startY, endX, endY);
+                line.setStrokeWidth(2);
+                line.setStroke(Color.BLACK);
+                
+                Polygon arrowHead = new Polygon();
+                
+                if (lines.get(i).hasBends()) {
+                    if (lines.get(i).bendsX.get(0) < 0){
+                        startX = blocks.get(start).getLeft() - leftShift;
+                        line = new javafx.scene.shape.Line(startX, startY, endX, endY);
+                        line.setStrokeWidth(2);
+                        line.setStroke(Color.BLACK);
+                    }
+                    double startXbend = startX;
+                    double startYbend = startY;
+                    double endXbend = 0;
+                    double endYbend = 0;
+                    
+                    for (int j = 0; j < lines.get(i).getNumberOfBends(); j++){
+                        if ((Math.abs(lines.get(i).bendsX.get(j)) < 10) && (Math.abs(lines.get(i).bendsX.get(j)) > 0)){
+                            if (lines.get(i).bendsX.get(j) < 0){
+                                endXbend = startXbend + lines.get(i).bendsX.get(j) - 10;
+                            } else {
+                                endXbend = startXbend + lines.get(i).bendsX.get(j) + 10;
+                            }
+                        }
+                        endYbend = startYbend + lines.get(i).bendsY.get(j);
+                        javafx.scene.shape.Line linebend = new javafx.scene.shape.Line(startXbend, startYbend, endXbend, endYbend);
+                        linebend.setStrokeWidth(2);
+                        linebend.setStroke(Color.BLACK);
+                        pane.getChildren().add(linebend);
+                        startXbend = endXbend;
+                        startYbend = endYbend;
+                    }
+                    startX = startXbend;
+                    startY = startYbend;
+                    endY = endYbend;
+                    
+                    line = new javafx.scene.shape.Line(startX, startY, endX, endY);
+                    line.setStrokeWidth(2);
+                    line.setStroke(Color.BLACK);
+                    
+                    double arrowHeadSize = 10;
+                    arrowHead.getPoints().addAll(
+                        endX - arrowHeadSize, endY - arrowHeadSize / 2,
+                        endX, endY,
+                        endX - arrowHeadSize, endY + arrowHeadSize / 2
+                    );
+                    arrowHead.setFill(Color.BLACK);
+
+//                    double arrowSize = 10;
+//                    double angle = Math.toRadians(45);
+//                    double arrowX1 = endX - arrowSize * Math.cos(angle + Math.atan2(endY - controlY, endX - controlX));
+//                    double arrowY1 = endY - arrowSize * Math.sin(angle + Math.atan2(endY - controlY, endX - controlX));
+//                    double arrowX2 = endX - arrowSize * Math.cos(-angle + Math.atan2(endY - controlY, endX - controlX));
+//                    double arrowY2 = endY - arrowSize * Math.sin(-angle + Math.atan2(endY - controlY, endX - controlX));
+
+//                    LineTo arrowLineTo1 = new LineTo(arrowX1, arrowY1);
+//                    LineTo arrowLineTo2 = new LineTo(arrowX2, arrowY2);
+//                    // Set the path elements
+                    //arrow.getElements().addAll(moveTo, lineTo, quadCurveTo);
+                    
+//                    arrowHead.getElements().addAll(moveTo, lineTo, quadCurveTo);
+                }else{
+
+                    double arrowHeadSize = 10;
+
+                    arrowHead.getPoints().addAll(
+                        endX - arrowHeadSize, endY - arrowHeadSize / 2,
+                        endX, endY,
+                        endX - arrowHeadSize, endY + arrowHeadSize / 2
+                    );
+                    arrowHead.setFill(Color.BLACK);
+                }
+                pane.getChildren().addAll(line, arrowHead);
+                
+                // Set the arrow color and stroke width
+
+                
+                // Set the starting point of the arrow
+//                double startX = blocks.get(start).getRight() - leftShift;
+//                double startY = blocks.get(start).getTop() + ((blocks.get(start).getBottom() - blocks.get(start).getTop())/2);
+//                MoveTo moveTo = new MoveTo(startX, startY);
+//        
+//                // Draw the arrow line
+//                double endX = blocks.get(end).getRight() - leftShift + blocks.get(end).getRight() - blocks.get(end).getLeft() - leftShift - leftShift;
+//                double endY = blocks.get(end).getTop() + ((blocks.get(start).getBottom() - blocks.get(end).getTop())/2);
+//                LineTo lineTo = new LineTo(endX, endY);
+        
+                }
+        }
 
 
         Scene scene = new Scene(pane, 640, 480);//What are the window size we want ? --> 640, 480
