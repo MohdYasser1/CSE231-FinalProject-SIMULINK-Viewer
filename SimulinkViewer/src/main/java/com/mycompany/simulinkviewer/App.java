@@ -275,7 +275,9 @@ public class App extends Application {
         which may be benificial as the java format also start 0,0 in the upper left 
         I think that this default window is suitable and we will apply the coordinates accordinaly
         */
+        stage.setTitle("SIMULINK Viewer");
         stage.setScene(scene);
+   
         stage.show();
     }
 
