@@ -22,15 +22,6 @@ import java.util.Collections;
 import java.util.Scanner;
 
 
-
-
-/*
-Ahmed/Omar TODO:
-class Block:
-    int getMinLeft(): Gets the minimum left position of a block to place it first and to be a refrence
-    
-*/
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////   Application  ///////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -50,15 +41,9 @@ public class App extends Application {
 
         Pane pane = new Pane();
 
-        //An ArrayList of left to find the border of the blocks.
-        ArrayList<Integer> leftBorder = new ArrayList<Integer>();
-        
-        for (int i = 0; i < blocks.size(); i++) {
-            int left = blocks.get(i).getLeft();
-            leftBorder.add(left);    
-        }
-        int minLeft = Collections.min(leftBorder);
+        int minLeft = getLeftBorder(blocks);
 
+        //Shifting all the elements to fit in the pane
         int leftShift = minLeft - 100;
 
         for (int i = 0; i < blocks.size(); i++) {
@@ -79,21 +64,30 @@ public class App extends Application {
             pane.getChildren().add(text);
         }
         for (int i = 0; i < lines.size(); i++) {
-            if (!lines.get(i).hasBranch()) {
-                Path arrow = new Path();
-                
-                int start = 0;
-                int end = 0;
-                
-                //Get the index of the source
-                for (int j = 0; j < blocks.size(); j++) {
-                    if (lines.get(i).getSrc() == blocks.get(j).getSID()) {
-                        start = j;
-                        break;
-                    }
-                }
-                
 
+            // Path arrow = new Path();
+                
+            int start = 0;
+            int end = 0;
+
+            //Get the index of the source
+            for (int j = 0; j < blocks.size(); j++) {
+                if (lines.get(i).getSrc() == blocks.get(j).getSID()) {
+                    start = j;
+                    break;
+                }
+            }
+            
+      
+            // Set the starting point of the arrow
+            double startX = blocks.get(start).getRight() - leftShift;
+            double startY = blocks.get(start).getTop() + ((blocks.get(start).getBottom() - blocks.get(start).getTop())/2);
+            double endX = 0;
+            double endY = 0;
+            Polygon arrowHead = new Polygon();
+
+            if (!lines.get(i).hasBranch()) {
+               
                 //Get the index of the distination
                 for (int j = 0; j < blocks.size(); j++) {
                     if (lines.get(i).getDst() == blocks.get(j).getSID()) {
@@ -101,21 +95,24 @@ public class App extends Application {
                         break;
                     }
                 }
-                // Set the starting point of the arrow
-                double startX = blocks.get(start).getRight() - leftShift;
-                double startY = blocks.get(start).getTop() + ((blocks.get(start).getBottom() - blocks.get(start).getTop())/2);
-
                 // Draw the straight arrow line
-                double endX = blocks.get(end).getLeft() - leftShift -3;
-                double endY = blocks.get(end).getTop() + ((blocks.get(end).getBottom() - blocks.get(end).getTop())/2);
-                
+                endX = blocks.get(end).getLeft() - leftShift -3;
+                endY = blocks.get(end).getTop() + ((blocks.get(end).getBottom() - blocks.get(end).getTop())/2);
+            
+  
                 javafx.scene.shape.Line line = new javafx.scene.shape.Line(startX, startY, endX, endY);
                 line.setStrokeWidth(2);
                 line.setStroke(Color.BLACK);
-                
-                Polygon arrowHead = new Polygon();
-                
-                if (lines.get(i).hasBends()) {
+    
+                double arrowHeadSize = 10;
+
+                arrowHead.getPoints().addAll(
+                    endX - arrowHeadSize, endY - arrowHeadSize / 2,
+                    endX, endY,
+                    endX - arrowHeadSize, endY + arrowHeadSize / 2
+                );
+                arrowHead.setFill(Color.BLACK);
+            if (lines.get(i).hasBends()) {
                     if (lines.get(i).bendsX.get(0) < 0){
                         startX = blocks.get(start).getLeft() - leftShift;
                         line = new javafx.scene.shape.Line(startX, startY, endX, endY);
@@ -151,7 +148,7 @@ public class App extends Application {
                     line.setStrokeWidth(2);
                     line.setStroke(Color.BLACK);
                     
-                    double arrowHeadSize = 10;
+                    arrowHeadSize = 10;
                     arrowHead.getPoints().addAll(
                         endX - arrowHeadSize, endY - arrowHeadSize / 2,
                         endX, endY,
@@ -159,47 +156,116 @@ public class App extends Application {
                     );
                     arrowHead.setFill(Color.BLACK);
 
-//                    double arrowSize = 10;
-//                    double angle = Math.toRadians(45);
-//                    double arrowX1 = endX - arrowSize * Math.cos(angle + Math.atan2(endY - controlY, endX - controlX));
-//                    double arrowY1 = endY - arrowSize * Math.sin(angle + Math.atan2(endY - controlY, endX - controlX));
-//                    double arrowX2 = endX - arrowSize * Math.cos(-angle + Math.atan2(endY - controlY, endX - controlX));
-//                    double arrowY2 = endY - arrowSize * Math.sin(-angle + Math.atan2(endY - controlY, endX - controlX));
-
-//                    LineTo arrowLineTo1 = new LineTo(arrowX1, arrowY1);
-//                    LineTo arrowLineTo2 = new LineTo(arrowX2, arrowY2);
-//                    // Set the path elements
-                    //arrow.getElements().addAll(moveTo, lineTo, quadCurveTo);
-                    
-//                    arrowHead.getElements().addAll(moveTo, lineTo, quadCurveTo);
-                }else{
-
-                    double arrowHeadSize = 10;
-
-                    arrowHead.getPoints().addAll(
-                        endX - arrowHeadSize, endY - arrowHeadSize / 2,
-                        endX, endY,
-                        endX - arrowHeadSize, endY + arrowHeadSize / 2
-                    );
-                    arrowHead.setFill(Color.BLACK);
-                }
-                pane.getChildren().addAll(line, arrowHead);
                 
-                // Set the arrow color and stroke width
-
-                
-                // Set the starting point of the arrow
-//                double startX = blocks.get(start).getRight() - leftShift;
-//                double startY = blocks.get(start).getTop() + ((blocks.get(start).getBottom() - blocks.get(start).getTop())/2);
-//                MoveTo moveTo = new MoveTo(startX, startY);
-//        
-//                // Draw the arrow line
-//                double endX = blocks.get(end).getRight() - leftShift + blocks.get(end).getRight() - blocks.get(end).getLeft() - leftShift - leftShift;
-//                double endY = blocks.get(end).getTop() + ((blocks.get(start).getBottom() - blocks.get(end).getTop())/2);
-//                LineTo lineTo = new LineTo(endX, endY);
-        
                 }
+            pane.getChildren().addAll(line, arrowHead);         
         }
+
+        else if (lines.get(i).hasBranch()){
+            for (int j = 0; j < lines.get(i).getBranches().size(); j++) {
+
+                //Get the index of the distination
+                for (int k = 0; k < blocks.size(); k++) {
+                    if (lines.get(i).getBranches().get(j).getDst() == blocks.get(k).getSID()) {
+                        end = k;
+                        break;
+                    }
+                }
+                startX = blocks.get(start).getRight() - leftShift;
+                startY = blocks.get(start).getTop() + ((blocks.get(start).getBottom() - blocks.get(start).getTop())/2);
+                endX =blocks.get(end).getLeft() - leftShift -3;
+                endY = startY;
+                if (!lines.get(i).getBranches().get(j).isOffset){
+                    //Draw the main branch
+                    javafx.scene.shape.Line line = new javafx.scene.shape.Line(startX, startY, endX, endY);
+                    line.setStrokeWidth(2);
+                    line.setStroke(Color.BLACK);
+
+                    double arrowHeadSize = 10;
+                    arrowHead = new Polygon();
+                    arrowHead.getPoints().addAll(
+                        endX - arrowHeadSize, endY - arrowHeadSize / 2,
+                        endX, endY,
+                        endX - arrowHeadSize, endY + arrowHeadSize / 2
+                    );
+                    arrowHead.setFill(Color.BLACK);
+                    pane.getChildren().addAll(line, arrowHead);
+                    
+                } else {
+                    for (int k = 0; k < lines.get(i).getNumberOfBends(); k++){
+                        Circle branchPoint = null;
+                        double endBendX = 0;
+                        double endBendY = 0;
+                        if (Math.abs(lines.get(i).bendsX.get(j)) > 0){
+                            startX = startX + lines.get(i).bendsX.get(j);
+                            endBendX = startX;
+                            branchPoint = new Circle(startX, startY, 3); 
+                        }
+                        if (Math.abs(lines.get(i).bendsY.get(j)) > 0){
+                            startY = startY + lines.get(i).bendsY.get(j);
+                            endBendY = startY;
+                            branchPoint = new Circle(startX , startY, 3);
+                        }
+                         pane.getChildren().add(branchPoint);
+                        if (Math.abs(lines.get(i).getBranches().get(j).getOffsetX()) > 0) {
+                            endBendX = endX + lines.get(i).getBranches().get(j).getOffsetX();
+                        }
+                        if (Math.abs(lines.get(i).getBranches().get(j).getOffsetY()) > 0) {
+                            endBendY = endY + lines.get(i).getBranches().get(j).getOffsetY();
+                        }   
+                        javafx.scene.shape.Line line = new javafx.scene.shape.Line(startX, startY, endBendX, endBendY);
+                        line.setStrokeWidth(2);
+                        line.setStroke(Color.BLACK);
+                        pane.getChildren().add(line);
+                        startX = endBendX;
+                        startY = endBendY;
+                    }    
+                    
+                    if (Math.abs(lines.get(i).getBranches().get(j).getOffsetX()) > 0) {
+                        endX = endX + lines.get(i).getBranches().get(j).getOffsetX();
+                    }
+                    if (Math.abs(lines.get(i).getBranches().get(j).getOffsetY()) > 0) {
+                        endY = endY + lines.get(i).getBranches().get(j).getOffsetY();
+                    }
+                    if (startX < (blocks.get(end).getRight() - leftShift -3)){
+                        javafx.scene.shape.Line line = new javafx.scene.shape.Line(startX, startY, endX, endY);
+                        line.setStrokeWidth(2);
+                        line.setStroke(Color.BLACK);
+                        pane.getChildren().add(line);
+                        arrowHead = new Polygon();
+                        double arrowHeadSize = 10;
+
+                            arrowHead.getPoints().addAll(
+                                endX - arrowHeadSize, endY - arrowHeadSize / 2,
+                                endX, endY,
+                                endX - arrowHeadSize, endY + arrowHeadSize / 2
+                            );
+                            arrowHead.setFill(Color.BLACK);
+                        pane.getChildren().add(arrowHead);
+                    } else {
+                        endX =  blocks.get(end).getRight() - leftShift;
+                        javafx.scene.shape.Line line = new javafx.scene.shape.Line(startX, startY, endX, endY);
+                        line.setStrokeWidth(2);
+                        line.setStroke(Color.BLACK);
+                        pane.getChildren().add(line);
+                        arrowHead = new Polygon();
+                        double arrowHeadSize = 10;
+
+                        arrowHead.getPoints().addAll(
+                                endX + arrowHeadSize, endY - arrowHeadSize / 2,
+                                endX, endY,
+                                endX + arrowHeadSize, endY + arrowHeadSize / 2
+                        );
+                        pane.getChildren().add(arrowHead);
+                    }
+
+                }
+
+               
+                
+            }
+        }
+}
 
 
         Scene scene = new Scene(pane, 640, 480);//What are the window size we want ? --> 640, 480
@@ -255,10 +321,8 @@ public static String getFileContent(String filename){
     }
     return null;
 }
-/*
-    Do I want to create a retrun typr to return the array list
-    How to transfer the Blocks to the Application to draw the blocks
-*/
+
+
     public static ArrayList createBlocks(String fileContent){
         ArrayList<Block> blocks = new ArrayList<Block>();
         int index = fileContent.indexOf("<System>");
@@ -269,6 +333,7 @@ public static String getFileContent(String filename){
         //We have an ArrayList of blocks
         return blocks;
     }
+
     public static ArrayList createLines(String fileContent){
         ArrayList<Line> lines = new ArrayList<Line>();
         int index = fileContent.indexOf("<System>");
@@ -280,7 +345,23 @@ public static String getFileContent(String filename){
         return lines;
     }
 
+
+    public static int getLeftBorder(ArrayList blocks) {
+
+        //An ArrayList of left to find the border of the blocks.
+        ArrayList<Integer> leftBorder = new ArrayList<Integer>();
+        
+        for (int i = 0; i < blocks.size(); i++) {
+            int left = ((Block) blocks.get(i)).getLeft();
+            leftBorder.add(left);    
+        }
+
+        return Collections.min(leftBorder);
+    }
 }
+
+
+//---------------------- Execptions --------------------------------
 class NotValidMDLFileException extends Exception{
     public NotValidMDLFileException(String message){
         super(message);
@@ -292,4 +373,4 @@ class EmptyMDLFileException extends RuntimeException{
         super(message);
     }
 }
-
+//--------------------------------------------------------------------

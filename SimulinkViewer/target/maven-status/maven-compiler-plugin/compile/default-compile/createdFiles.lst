@@ -1,1 +1,8 @@
+com\mycompany\simulinkviewer\Branch.class
+com\mycompany\simulinkviewer\Line.class
+module-info.class
+com\mycompany\simulinkviewer\EmptyMDLFileException.class
+com\mycompany\simulinkviewer\App.class
+com\mycompany\simulinkviewer\NotValidMDLFileException.class
 com\mycompany\simulinkviewer\SystemInfo.class
+com\mycompany\simulinkviewer\Block.class

@@ -33,45 +33,41 @@ public class Line{
 
         //If there is no branchs get the distination 
         //We will draw the line from the block to the block
+        index = 0;
+        if(content.indexOf("Points", index) != -1){
+            numberOfPoints ++;
+            index = content.indexOf("Points", index);
+
+
+            while (content.indexOf(";", index) != -1){
+                index = content.indexOf(";", index) + 1;
+                numberOfPoints ++;
+            }
+
+            index = content.indexOf("Points");
+            for (int i = 0; i < numberOfPoints ; i++){
+                if (i > 0){
+                    index = content.indexOf(";", index) + 1;
+                }
+                if (i == 0){
+                    bendsX.add(Integer.parseInt(content.substring(content.indexOf("Points") + 9,content.indexOf(",",content.indexOf("Points")))));
+                } else {
+                    bendsX.add(Integer.parseInt(content.substring(index + 1,content.indexOf(",",index))));
+                }
+                if (i == (numberOfPoints -1)) {
+                    bendsY.add(Integer.parseInt(content.substring(content.indexOf(",", index)+2, content.indexOf("]",index))));
+                } else if (i == 0){
+                    bendsY.add(Integer.parseInt(content.substring(content.indexOf(",", content.indexOf("Points"))+2,content.indexOf(";",content.indexOf("Points")))));
+                }else {
+                    bendsY.add(Integer.parseInt(content.substring(content.indexOf(",", index)+2,content.indexOf(";",index))));
+                }
+            }
+
+
+        }
+
         if (numberOfBranch == 0) {
             dst = Integer.parseInt(content.substring(content.indexOf("Dst")+5,content.indexOf("#in",content.indexOf("Dst")+5)));
-            index = 0;
-            if(content.indexOf("Points", index) != -1){
-                numberOfPoints ++;
-                index = content.indexOf("Points", index);
-
-            
-                while (content.indexOf(";", index) != -1){
-                    index = content.indexOf(";", index) + 1;
-                    numberOfPoints ++;
-                }
-
-                index = content.indexOf("Points");
-                for (int i = 0; i < numberOfPoints ; i++){
-                    if (i > 0){
-                        index = content.indexOf(";", index) + 1;
-                    }
-                    if (i == 0){
-                        bendsX.add(Integer.parseInt(content.substring(content.indexOf("Points") + 9,content.indexOf(",",content.indexOf("Points")))));
-                    } else {
-                        bendsX.add(Integer.parseInt(content.substring(index + 1,content.indexOf(",",index))));
-                    }
-                    if (i == (numberOfPoints -1)) {
-                        bendsY.add(Integer.parseInt(content.substring(content.indexOf(",", index)+2, content.indexOf("]",index))));
-                    } else if (i == 0){
-                        bendsY.add(Integer.parseInt(content.substring(content.indexOf(",", content.indexOf("Points"))+2,content.indexOf(";",content.indexOf("Points")))));
-                    }else {
-                        bendsY.add(Integer.parseInt(content.substring(content.indexOf(",", index)+2,content.indexOf(";",index))));
-                    }
-                }
-
-                 
-            }
-        }
-        //if there is a branch get the length of the main branch
-        else{
-            lengthX = Integer.parseInt(content.substring(content.indexOf("Points")+9,content.indexOf(",",content.indexOf("Points")+9)));
-            lengthY = Integer.parseInt(content.substring(content.indexOf(",")+2,content.indexOf("]",content.indexOf(","))));
         }
     }
     public boolean hasBranch() {
@@ -119,6 +115,7 @@ public class Line{
         private int offsetX;
         private int offsetY;
         public boolean isOffset = false; 
+        
 
         public Branch(String Branchcontent){
             
@@ -132,5 +129,18 @@ public class Line{
                 offsetY = Integer.parseInt(Branchcontent.substring(Branchcontent.indexOf(",",Branchcontent.indexOf("Points")+9)+2,Branchcontent.indexOf("]",Branchcontent.indexOf("Points")+9)));
             }
         }
+
+    public int getDst() {
+        return dst;
+    }
+
+    public int getOffsetX() {
+        return offsetX;
+    }
+
+    public int getOffsetY() {
+        return offsetY;
+    }
+
     }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
