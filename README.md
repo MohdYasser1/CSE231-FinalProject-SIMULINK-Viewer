@@ -27,7 +27,7 @@ To get the same output use this path: "src/main/java/com/mycompany/simulinkviewe
 ## Getting Started
 
 1. Clone the repository or download the source code.
-2. Open the project in your favorite Java development environment (e.g., IntelliJ, Eclipse). I recommend to use NetBeans.
+2. Open the project in your favorite Java development environment (e.g., IntelliJ, Eclipse). It's recommended to use NetBeans.
 3. Make sure you have the JavaFX library added to the project dependencies.
 4. Run the Project
 5. You will be prompted to enter the path of the Simulink model file (`.mdl`). Provide the path and press Enter.
