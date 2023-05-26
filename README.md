@@ -10,9 +10,13 @@ This project is Done by:
 ## Features
 
 - Displays blocks as rectangles with their names.
-- Draws connections between blocks using lines and arrows. 
-Here is an Example of what the Application should produce
-![Example Image](/Screenshots/ExampleScreenshot)
+- Draws connections between blocks using lines and arrows.
+   
+Here is an Example of what the Application should produce:
+<div align="center">
+  <img src="/Screenshots/ExampleScreenshot.png" alt="Example Image" width="400" height="300" />
+</div>
+To get the same output use this path: "src/main/java/com/mycompany/simulinkviewer/Example.mdl"
 
 ## Prerequisites
 
