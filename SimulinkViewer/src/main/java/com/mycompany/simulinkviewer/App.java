@@ -25,8 +25,9 @@ public class App extends Application {
     @Override
     public void start(Stage stage) {
         Scanner input = new Scanner(System.in);
-        String fileContent = getFileContent("src/main/java/com/mycompany/simulinkviewer/Example.mdl");
-        // String fileContent = getFileContent(input.nextLine());
+//        String fileContent = getFileContent("src/main/java/com/mycompany/simulinkviewer/Example.mdl");
+        System.out.println("Enter the path of the '.mdl' file:");
+        String fileContent = getFileContent(input.nextLine());
         //String fileContent = getFileContent(args[0]);
 
         //We have 2 ArrayLists, One for blocks and One for lines.
