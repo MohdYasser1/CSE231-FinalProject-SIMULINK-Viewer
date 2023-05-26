@@ -9,15 +9,15 @@ import java.util.ArrayList;
 public class Line{
     //We need to count the number of branches in each line
     private static int Num;
-    private int src;
-    private ArrayList<Branch> branches = new ArrayList<Branch>();
+    private final int src;
+    private final ArrayList<Branch> branches = new ArrayList<>();
     private int dst;
     private int lengthX;
     private int lengthY;
     private int numberOfBranch = 0;
     private int numberOfPoints = 0;
-    ArrayList<Integer> bendsX = new ArrayList<Integer>();
-    ArrayList<Integer> bendsY = new ArrayList<Integer>();
+    ArrayList<Integer> bendsX = new ArrayList<>();
+    ArrayList<Integer> bendsY = new ArrayList<>();
 
     public Line(String content){
         Num++;
@@ -50,16 +50,16 @@ public class Line{
                     index = content.indexOf(";", index) + 1;
                 }
                 if (i == 0){
-                    bendsX.add(Integer.parseInt(content.substring(content.indexOf("Points") + 9,content.indexOf(",",content.indexOf("Points")))));
+                    bendsX.add(Integer.valueOf(content.substring(content.indexOf("Points") + 9,content.indexOf(",",content.indexOf("Points")))));
                 } else {
-                    bendsX.add(Integer.parseInt(content.substring(index + 1,content.indexOf(",",index))));
+                    bendsX.add(Integer.valueOf(content.substring(index + 1,content.indexOf(",",index))));
                 }
                 if (i == (numberOfPoints -1)) {
-                    bendsY.add(Integer.parseInt(content.substring(content.indexOf(",", index)+2, content.indexOf("]",index))));
+                    bendsY.add(Integer.valueOf(content.substring(content.indexOf(",", index)+2, content.indexOf("]",index))));
                 } else if (i == 0){
-                    bendsY.add(Integer.parseInt(content.substring(content.indexOf(",", content.indexOf("Points"))+2,content.indexOf(";",content.indexOf("Points")))));
+                    bendsY.add(Integer.valueOf(content.substring(content.indexOf(",", content.indexOf("Points"))+2,content.indexOf(";",content.indexOf("Points")))));
                 }else {
-                    bendsY.add(Integer.parseInt(content.substring(content.indexOf(",", index)+2,content.indexOf(";",index))));
+                    bendsY.add(Integer.valueOf(content.substring(content.indexOf(",", index)+2,content.indexOf(";",index))));
                 }
             }
 
@@ -111,7 +111,7 @@ public class Line{
     }
 }
     class Branch{
-        private int dst;
+        private final int dst;
         private int offsetX;
         private int offsetY;
         public boolean isOffset = false; 
@@ -122,7 +122,7 @@ public class Line{
             //Get the distantion of the branch there should be one distanation to a branch
             dst = Integer.parseInt(Branchcontent.substring(Branchcontent.indexOf("\"Dst\">")+6,Branchcontent.indexOf("#in",Branchcontent.indexOf("\"Dst\">")+6)));
             //The branch is offset from the source 
-            if(Branchcontent.indexOf("Points") != -1){
+            if(Branchcontent.contains("Points")){
                 isOffset = true;
                 //Get the offset in X and Y coordinates
                 offsetX = Integer.parseInt(Branchcontent.substring(Branchcontent.indexOf("Points")+9,Branchcontent.indexOf(",",Branchcontent.indexOf("Points")+9)));

@@ -9,12 +9,12 @@ package com.mycompany.simulinkviewer;
 //Class Block is done and works correctly :)
 public class Block{
     private static int Num;
-    private int SID;
-    private String name;
-    private int left;
-    private int top;
-    private int right;
-    private int bottom;
+    private final int SID;
+    private final String name;
+    private final int left;
+    private final int top;
+    private final int right;
+    private final int bottom;
     
     //Given a blocks content this constructor should divide it into its important parts
     public Block(String content){
