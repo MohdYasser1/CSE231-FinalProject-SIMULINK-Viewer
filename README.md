@@ -10,7 +10,9 @@ This project is Done by:
 ## Features
 
 - Displays blocks as rectangles with their names.
-- Draws connections between blocks using lines and arrows.  
+- Draws connections between blocks using lines and arrows. 
+Here is an Example of what the Application should produce
+![Example Image](/
 
 ## Prerequisites
 
