@@ -12,7 +12,7 @@ This project is Done by:
 - Displays blocks as rectangles with their names.
 - Draws connections between blocks using lines and arrows. 
 Here is an Example of what the Application should produce
-![Example Image](/
+![Example Image](/Screenshots/ExampleScreenshot)
 
 ## Prerequisites
 
